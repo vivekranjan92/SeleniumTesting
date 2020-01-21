@@ -3,35 +3,46 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System.Threading;
 
-class SpecialElementRadioButton
+class SelectElementDropDownMenu
 {
     static IWebDriver driver = new ChromeDriver();
-    static IWebElement radioButton;
+    static IWebElement dropDownMenu;
+    static IWebElement elementFromTheDropDownMenu;
 
     static void Main()
     {
-        string url = "http://testing.todorvachev.com/special-elements/radio-buttontest/";
-        // We have 3 different radio button so keeping them in to an array So that we can iterate it through for loop
-        string[] option = { "1", "3", "5" };
+        string url = "http://testing.todorvachev.com/special-elements/drop-down-menu-test/";
+        // we can switch the number from 1 to 4(since we have only 4 value in the dropdown) to get the next dropdown element
+        // here we are only checking the value of 3rd element in the drop down list
+        string dropDownMenuElements = "#post-6 > div > p:nth-child(6) > select > option:nth-child(3)";
 
         driver.Navigate().GoToUrl(url);
 
-        for (int i = 0; i < option.Length; i++)
-        {
-            // using CssSelector as it is fast compared to other locators and name selector has same name for all the radio button
-            radioButton = driver.FindElement(By.CssSelector("#post-10 > div > form > p:nth-child(6) > input[type =\"radio\"]:nth-child(" + option[i] + ")"));
+        dropDownMenu = driver.FindElement(By.Name("DropDownTest"));
 
-            // condition to check if the radio button is checked or not
-            if (radioButton.GetAttribute("checked") == "true")
-            {
-                Console.WriteLine("The " + (i + 1) + " radio button is checked!");
-            }
-            else
-            {
-                Console.WriteLine("This is one of the unchecked radio buttons!");
-            }
+        // this will give us the current selected value from the dropdown
+        Console.WriteLine("The selected value is: " + dropDownMenu.GetAttribute("value"));
+
+        elementFromTheDropDownMenu = driver.FindElement(By.CssSelector(dropDownMenuElements));
+        // this will select the 3rd option from the dropdown and print it on the console window
+        Console.WriteLine("The third option from the drop down menu is: " + elementFromTheDropDownMenu.GetAttribute("value"));
+
+        elementFromTheDropDownMenu.Click();
+
+        Console.WriteLine("The selected value is: " + dropDownMenu.GetAttribute("value"));
+        Thread.Sleep(3000);
+
+        // we are looping through to check all the value in the dropdown
+        for (int i = 1; i <= 4; i++)
+        {
+            dropDownMenuElements = "#post-6 > div > p:nth-child(6) > select > option:nth-child(" + i + ")";
+            elementFromTheDropDownMenu = driver.FindElement(By.CssSelector(dropDownMenuElements));
+            // it will give us the number of current option, and we can verify if it is correct or not
+            Console.WriteLine("The " + i + " option from the drop down menu is: " + elementFromTheDropDownMenu.GetAttribute("value"));
         }
-        
+
+        Thread.Sleep(15000);
+
         driver.Quit();
     }
 }
