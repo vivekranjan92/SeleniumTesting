@@ -3,35 +3,35 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System.Threading;
 
-class SpecialElementCheckBox
+class SpecialElementRadioButton
 {
     static IWebDriver driver = new ChromeDriver();
-    static IWebElement element;
+    static IWebElement radioButton;
 
     static void Main()
     {
-        string url = "http://testing.todorvachev.com/special-elements/check-button-test-3/";
-        // When we have multiple checkbox but we have to select some specific checkbox
-        string option = "2";
+        string url = "http://testing.todorvachev.com/special-elements/radio-buttontest/";
+        // We have 3 different radio button so keeping them in to an array So that we can iterate it through for loop
+        string[] option = { "1", "3", "5" };
+
         driver.Navigate().GoToUrl(url);
 
-        // using XPath as the all the check box has same name,
-        element = driver.FindElement(By.XPath("//*[@id=\"post-33\"]/div/p[7]/input[" + option + "]"));
-
-        // converting the specified string representation of a logical value to its Boolean equivalent
-        bool.TryParse(element.GetAttribute("checked"), out bool isChecked);
-
-        if (isChecked)
+        for (int i = 0; i < option.Length; i++)
         {
-            Console.WriteLine("This checkbox is already checked!");
-        }
-        else
-        {
-            Console.WriteLine("We forgot to select the checkbox, lets check it!");
-            element.Click();
-        }
+            // using CssSelector as it is fast compared to other locators and name selector has same name for all the radio button
+            radioButton = driver.FindElement(By.CssSelector("#post-10 > div > form > p:nth-child(6) > input[type =\"radio\"]:nth-child(" + option[i] + ")"));
 
+            // condition to check if the radio button is checked or not
+            if (radioButton.GetAttribute("checked") == "true")
+            {
+                Console.WriteLine("The " + (i + 1) + " radio button is checked!");
+            }
+            else
+            {
+                Console.WriteLine("This is one of the unchecked radio buttons!");
+            }
+        }
+        
         driver.Quit();
     }
-
 }
